@@ -16,6 +16,7 @@ import os
 import psutil
 
 
+plt.rcParams['font.size'] = 16
 def load_and_preprocess_heart_data(filepath):
     try:
         data = pd.read_csv(filepath)
@@ -410,36 +411,36 @@ if X_train_heart is not None and X_train_mobile is not None:
     # Neural network with clustering features
     em_clusters = 16  # Example number of clusters for EM
     kmean_clusters = 32  # Example number of clusters for KMeans
-    nn_clustering_results = []
-    nn_clustering_results.append(
-        ('Mobile + NN', *run_nn_experiment(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile)))
-    nn_clustering_results.append(('Mobile + EM Features + NN',
-                                  *run_nn_with_clustering_features(X_train_mobile, y_train_mobile, X_test_mobile,
-                                                                  y_test_mobile,
-                                                                  'EM', em_clusters)))
-    nn_clustering_results.append(('Mobile + KMeans Features + NN',
-                                  *run_nn_with_clustering_features(X_train_mobile, y_train_mobile, X_test_mobile,
-                                                                  y_test_mobile,
-                                                                  'KMeans', kmean_clusters)))
+    # nn_clustering_results = []
+    # nn_clustering_results.append(
+    #     ('Mobile + NN', *run_nn_experiment(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile)))
+    # nn_clustering_results.append(('Mobile + EM Features + NN',
+    #                               *run_nn_with_clustering_features(X_train_mobile, y_train_mobile, X_test_mobile,
+    #                                                               y_test_mobile,
+    #                                                               'EM', em_clusters)))
+    # nn_clustering_results.append(('Mobile + KMeans Features + NN',
+    #                               *run_nn_with_clustering_features(X_train_mobile, y_train_mobile, X_test_mobile,
+    #                                                               y_test_mobile,
+    #                                                               'KMeans', kmean_clusters)))
 
-    # Print NN with clustering features results
-    print("\nNeural Network with Clustering Features Results:")
-    for result in nn_clustering_results:
-        print(f"{result[0]}: Accuracy={result[1]:.4f}")
-
-    # Plot confusion matrices
-    cm_list = [result[2] for result in nn_clustering_results if result[2] is not None]
-    titles = [result[0] for result in nn_clustering_results if result[2] is not None]
-    plot_confusion_matrices(cm_list, titles, save_dir)
+    # # Print NN with clustering features results
+    # print("\nNeural Network with Clustering Features Results:")
+    # for result in nn_clustering_results:
+    #     print(f"{result[0]}: Accuracy={result[1]:.4f}")
+    #
+    # # Plot confusion matrices
+    # cm_list = [result[2] for result in nn_clustering_results if result[2] is not None]
+    # titles = [result[0] for result in nn_clustering_results if result[2] is not None]
+    # plot_confusion_matrices(cm_list, titles, save_dir)
 
     # New experiments
     n_components_dict = {'RP': 8, 'PCA': 8, 'ICA': 8, 't-SNE': 3}
 
     # Loss curves
-    plot_loss_curves(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile, ['RP', 'PCA', 'ICA', 't-SNE'], n_components_dict, save_dir)
-
-    # Learning curves
-    plot_learning_curves(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile, ['RP', 'PCA', 'ICA', 't-SNE'], n_components_dict, save_dir)
+    # plot_loss_curves(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile, ['RP', 'PCA', 'ICA', 't-SNE'], n_components_dict, save_dir)
+    #
+    # # Learning curves
+    # plot_learning_curves(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile, ['RP', 'PCA', 'ICA', 't-SNE'], n_components_dict, save_dir)
 
     # Memory usage
     plot_memory_usage(['RP', 'PCA', 'ICA', 't-SNE'], n_components_dict, X_train_mobile, X_test_mobile, save_dir)
@@ -457,7 +458,7 @@ if X_train_heart is not None and X_train_mobile is not None:
     plot_learning_curves_with_clustering(X_train_mobile, y_train_mobile, X_test_mobile, y_test_mobile, clustering_methods, {'Mobile + NN': 0, 'Mobile + EM Features + NN': em_clusters, 'Mobile + KMeans Features + NN': kmean_clusters}, save_dir)
 
     # Memory usage for clustering features
-    plot_memory_usage_with_clustering(clustering_methods, {'Mobile + NN': 0, 'Mobile + EM Features + NN': em_clusters, 'Mobile + KMeans Features + NN': kmean_clusters}, X_train_mobile, X_test_mobile, save_dir)
+    # plot_memory_usage_with_clustering(clustering_methods, {'Mobile + NN': 0, 'Mobile + EM Features + NN': em_clusters, 'Mobile + KMeans Features + NN': kmean_clusters}, X_train_mobile, X_test_mobile, save_dir)
 
 else:
     print("Error: One or both datasets could not be loaded.")

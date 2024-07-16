@@ -10,6 +10,7 @@ import os
 import time
 from sklearn.manifold import TSNE
 
+plt.rcParams['font.size'] = 14
 
 def load_and_preprocess_heart_data(filepath):
     try:

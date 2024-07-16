@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 
+plt.rcParams['font.size'] = 14
 
 def load_and_preprocess_heart_data(filepath):
     try:
@@ -59,7 +60,7 @@ def run_clustering_experiment_with_timing(X_train, algorithm, n_clusters_range, 
     return timings
 
 def plot_clustering_timings(timings_heart_em, timings_heart_kmeans, timings_mobile_em, timings_mobile_kmeans, n_clusters_range, save_dir):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 5))
 
     # Define color palette
     colors = sns.color_palette("husl", 2)  # Using a color palette with 2 distinct colors

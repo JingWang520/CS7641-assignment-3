@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 
+plt.rcParams['font.size'] = 14
 
 def load_and_preprocess_heart_data(filepath):
     try:

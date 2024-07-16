@@ -15,6 +15,7 @@ from sklearn.neural_network import MLPClassifier
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
+plt.rcParams['font.size'] = 16
 
 
 def load_and_preprocess_heart_data(filepath):
@@ -61,33 +62,31 @@ def calculate_sse_and_log_likelihood(X, algorithm, n_clusters_range):
         else:
             raise ValueError("Unsupported algorithm: choose 'EM' or 'KMeans'")
     return sse, log_likelihood
+
 def plot_sse_and_log_likelihood(sse_heart_kmeans, log_likelihood_heart_em, sse_mobile_kmeans, log_likelihood_mobile_em, n_clusters_range, save_dir):
-    fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+    fig, axs = plt.subplots(2, 1, figsize=(12, 8))
 
-    sns.lineplot(x=n_clusters_range, y=log_likelihood_heart_em, ax=axs[0, 0])
-    axs[0, 0].set_title('Heart Data - EM (Log Likelihood)')
-    axs[0, 0].set_xlabel('Number of Clusters')
-    axs[0, 0].set_ylabel('Log Likelihood')
+    plt.rcParams['font.size'] = 20
+    # Plot Log Likelihood for both datasets
+    sns.lineplot(x=n_clusters_range, y=log_likelihood_heart_em, ax=axs[0], label='Heart Data')
+    sns.lineplot(x=n_clusters_range, y=log_likelihood_mobile_em, ax=axs[0], label='Mobile Data')
+    axs[0].set_title('EM (Log Likelihood)')
+    axs[0].set_xlabel('Number of Clusters')
+    axs[0].set_ylabel('Log Likelihood')
+    axs[0].legend()
 
-    sns.lineplot(x=n_clusters_range, y=sse_heart_kmeans, ax=axs[0, 1])
-    axs[0, 1].set_title('Heart Data - KMeans (SSE)')
-    axs[0, 1].set_xlabel('Number of Clusters')
-    axs[0, 1].set_ylabel('SSE')
-
-    sns.lineplot(x=n_clusters_range, y=log_likelihood_mobile_em, ax=axs[1, 0])
-    axs[1, 0].set_title('Mobile Data - EM (Log Likelihood)')
-    axs[1, 0].set_xlabel('Number of Clusters')
-    axs[1, 0].set_ylabel('Log Likelihood')
-
-    sns.lineplot(x=n_clusters_range, y=sse_mobile_kmeans, ax=axs[1, 1])
-    axs[1, 1].set_title('Mobile Data - KMeans (SSE)')
-    axs[1, 1].set_xlabel('Number of Clusters')
-    axs[1, 1].set_ylabel('SSE')
+    # Plot SSE for both datasets
+    sns.lineplot(x=n_clusters_range, y=sse_heart_kmeans, ax=axs[1], label='Heart Data')
+    sns.lineplot(x=n_clusters_range, y=sse_mobile_kmeans, ax=axs[1], label='Mobile Data')
+    axs[1].set_title('KMeans (SSE)')
+    axs[1].set_xlabel('Number of Clusters')
+    axs[1].set_ylabel('SSE')
+    axs[1].legend()
 
     plt.tight_layout()
     plt.savefig(os.path.join(save_dir, 'sse_log_likelihood_results.png'))
     plt.show()
-
+    plt.rcParams['font.size'] = 16
 
 def run_clustering_experiment(X_train, y_train, X_test, y_test, algorithm, n_clusters_range):
     results = []
@@ -135,28 +134,24 @@ def run_clustering_experiment(X_train, y_train, X_test, y_test, algorithm, n_clu
     return results
 
 def plot_results(results_heart_em, results_heart_kmeans, results_mobile_em, results_mobile_kmeans, save_dir):
-    fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+    plt.figure(figsize=(10, 6))
 
-    sns.lineplot(x=[x[0] for x in results_heart_em], y=[x[1] for x in results_heart_em], ax=axs[0, 0])
-    axs[0, 0].set_title('Heart Data - EM')
-    axs[0, 0].set_xlabel('Number of Clusters')
-    axs[0, 0].set_ylabel('Accuracy')
+    # Plot Heart Data - EM
+    sns.lineplot(x=[x[0] for x in results_heart_em], y=[x[1] for x in results_heart_em], label='Heart Data - EM')
 
-    sns.lineplot(x=[x[0] for x in results_heart_kmeans], y=[x[1] for x in results_heart_kmeans], ax=axs[0, 1])
-    axs[0, 1].set_title('Heart Data - KMeans')
-    axs[0, 1].set_xlabel('Number of Clusters')
-    axs[0, 1].set_ylabel('Accuracy')
+    # Plot Heart Data - KMeans
+    sns.lineplot(x=[x[0] for x in results_heart_kmeans], y=[x[1] for x in results_heart_kmeans], label='Heart Data - KMeans')
 
-    sns.lineplot(x=[x[0] for x in results_mobile_em], y=[x[1] for x in results_mobile_em], ax=axs[1, 0])
-    axs[1, 0].set_title('Mobile Data - EM')
-    axs[1, 0].set_xlabel('Number of Clusters')
-    axs[1, 0].set_ylabel('Accuracy')
+    # Plot Mobile Data - EM
+    sns.lineplot(x=[x[0] for x in results_mobile_em], y=[x[1] for x in results_mobile_em], label='Mobile Data - EM')
 
-    sns.lineplot(x=[x[0] for x in results_mobile_kmeans], y=[x[1] for x in results_mobile_kmeans], ax=axs[1, 1])
-    axs[1, 1].set_title('Mobile Data - KMeans')
-    axs[1, 1].set_xlabel('Number of Clusters')
-    axs[1, 1].set_ylabel('Accuracy')
+    # Plot Mobile Data - KMeans
+    sns.lineplot(x=[x[0] for x in results_mobile_kmeans], y=[x[1] for x in results_mobile_kmeans], label='Mobile Data - KMeans')
 
+    plt.title('Clustering Results')
+    plt.xlabel('Number of Clusters')
+    plt.ylabel('Accuracy')
+    plt.legend()
     plt.tight_layout()
     plt.savefig(os.path.join(save_dir, 'clustering_results.png'))
     plt.show()
@@ -200,6 +195,7 @@ def visualize_with_first_two_components(X, y, title, save_dir):
         plt.figure(figsize=(8, 6))
         sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=y, palette='viridis')
         plt.title(title)
+        plt.tight_layout()
         plt.savefig(os.path.join(save_dir, f'{title}.png'))
         plt.show()
     except Exception as e:
@@ -254,29 +250,19 @@ def calculate_silhouette_scores(X, algorithm, n_clusters_range):
 
 
 def plot_silhouette_scores(silhouette_heart_em, silhouette_heart_kmeans, silhouette_mobile_em, silhouette_mobile_kmeans, n_clusters_range, save_dir):
-    fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+    plt.figure(figsize=(10, 6))
 
-    sns.lineplot(x=n_clusters_range, y=silhouette_heart_em, ax=axs[0, 0])
-    axs[0, 0].set_title('Heart Data - EM')
-    axs[0, 0].set_xlabel('Number of Clusters')
-    axs[0, 0].set_ylabel('Silhouette Score')
+    sns.lineplot(x=n_clusters_range, y=silhouette_heart_em, label='Heart Data - EM')
+    sns.lineplot(x=n_clusters_range, y=silhouette_heart_kmeans, label='Heart Data - KMeans')
+    sns.lineplot(x=n_clusters_range, y=silhouette_mobile_em, label='Mobile Data - EM')
+    sns.lineplot(x=n_clusters_range, y=silhouette_mobile_kmeans, label='Mobile Data - KMeans')
 
-    sns.lineplot(x=n_clusters_range, y=silhouette_heart_kmeans, ax=axs[0, 1])
-    axs[0, 1].set_title('Heart Data - KMeans')
-    axs[0, 1].set_xlabel('Number of Clusters')
-    axs[0, 1].set_ylabel('Silhouette Score')
-
-    sns.lineplot(x=n_clusters_range, y=silhouette_mobile_em, ax=axs[1, 0])
-    axs[1, 0].set_title('Mobile Data - EM')
-    axs[1, 0].set_xlabel('Number of Clusters')
-    axs[1, 0].set_ylabel('Silhouette Score')
-
-    sns.lineplot(x=n_clusters_range, y=silhouette_mobile_kmeans, ax=axs[1, 1])
-    axs[1, 1].set_title('Mobile Data - KMeans')
-    axs[1, 1].set_xlabel('Number of Clusters')
-    axs[1, 1].set_ylabel('Silhouette Score')
-
+    plt.title('Silhouette Scores for Different Clustering Methods and Datasets')
+    plt.xlabel('Number of Clusters')
+    plt.ylabel('Silhouette Score')
+    plt.legend()
     plt.tight_layout()
+
     plt.savefig(os.path.join(save_dir, 'silhouette_scores.png'))
     plt.show()
 
